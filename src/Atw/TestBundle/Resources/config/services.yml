@@ -1,0 +1,11 @@
+parameters:
+    hogehoge: hoge
+
+#services:
+#    hoge.hoge:
+#        class: Atw\TestBundle\hoge\hoger
+#        arguments:
+#            - @logger
+#            - @doctrine.orm.default_entity_manager
+#            - @hoge.hoger_interface
+#            - %data_get_tg%

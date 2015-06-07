@@ -1,0 +1,13 @@
+#homepage:
+#    pattern: /
+#    defaults: { _controller: AtwTestBundle:Default:index }
+
+
+atw_test:
+    resource: "@AtwTestBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
