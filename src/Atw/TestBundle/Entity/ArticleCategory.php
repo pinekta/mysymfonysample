@@ -3,14 +3,17 @@
 namespace Atw\TestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * ArticleCategories
+ * ArticleCategory
  *
- * @ORM\Table(name="article_categories", indexes={@ORM\Index(name="idx_article_categories_article_id", columns={"article_id"}), @ORM\Index(name="idx_article_categories_category_id", columns={"category_id"})})
- * @ORM\Entity
+ * @ORM\Table(name="article_category", indexes={@ORM\Index(name="idx_article_category_article_id", columns={"article_id"}), @ORM\Index(name="idx_article_category_category_id", columns={"category_id"})})
+ * @ORM\Entity(repositoryClass="Atw\TestBundle\Repository\ArticleCategoryRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
-class ArticleCategories
+class ArticleCategory
 {
     /**
      * @var integer
@@ -18,7 +21,7 @@ class ArticleCategories
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="article_categories_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="article_category_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -37,21 +40,21 @@ class ArticleCategories
     private $updatedAt;
 
     /**
-     * @var \Articles
+     * @var \Article
      *
-     * @ORM\ManyToOne(targetEntity="Articles")
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="articleCategories")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $article;
 
     /**
-     * @var \Categories
+     * @var \Category
      *
-     * @ORM\ManyToOne(targetEntity="Categories")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="articleCategories")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $category;
@@ -72,7 +75,7 @@ class ArticleCategories
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return ArticleCategories
+     * @return ArticleCategory
      */
     public function setCreatedAt($createdAt)
     {
@@ -95,7 +98,7 @@ class ArticleCategories
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return ArticleCategories
+     * @return ArticleCategory
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -117,10 +120,10 @@ class ArticleCategories
     /**
      * Set article
      *
-     * @param \Atw\TestBundle\Entity\Articles $article
-     * @return ArticleCategories
+     * @param \Atw\TestBundle\Entity\Article $article
+     * @return ArticleCategory
      */
-    public function setArticle(\Atw\TestBundle\Entity\Articles $article = null)
+    public function setArticle(\Atw\TestBundle\Entity\Article $article = null)
     {
         $this->article = $article;
 
@@ -130,7 +133,7 @@ class ArticleCategories
     /**
      * Get article
      *
-     * @return \Atw\TestBundle\Entity\Articles 
+     * @return \Atw\TestBundle\Entity\Article 
      */
     public function getArticle()
     {
@@ -140,10 +143,10 @@ class ArticleCategories
     /**
      * Set category
      *
-     * @param \Atw\TestBundle\Entity\Categories $category
-     * @return ArticleCategories
+     * @param \Atw\TestBundle\Entity\Category $category
+     * @return ArticleCategory
      */
-    public function setCategory(\Atw\TestBundle\Entity\Categories $category = null)
+    public function setCategory(\Atw\TestBundle\Entity\Category $category = null)
     {
         $this->category = $category;
 
@@ -153,7 +156,7 @@ class ArticleCategories
     /**
      * Get category
      *
-     * @return \Atw\TestBundle\Entity\Categories 
+     * @return \Atw\TestBundle\Entity\Category 
      */
     public function getCategory()
     {

@@ -3,14 +3,23 @@
 namespace Atw\TestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
- * Categories
+ * Category
  *
- * @ORM\Table(name="categories", uniqueConstraints={@ORM\UniqueConstraint(name="unique_categories_category_code", columns={"category_code"})})
- * @ORM\Entity
+ * @UniqueEntity(
+ *     fields={"categoryCode"},
+ *     errorPath="categoryCode",
+ *     message="入力されたカテゴリコードは既に使用されています。"
+ * )
+ * @ORM\Table(name="category", uniqueConstraints={@ORM\UniqueConstraint(name="unique_category_category_code", columns={"category_code"})})
+ * @ORM\Entity(repositoryClass="Atw\TestBundle\Repository\CategoryRepository")
  */
-class Categories
+class Category
 {
     /**
      * @var integer
@@ -18,7 +27,7 @@ class Categories
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="categories_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="category_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -26,6 +35,19 @@ class Categories
      * @var string
      *
      * @ORM\Column(name="category_code", type="string", length=64, nullable=false)
+     * @Assert\NotBlank(
+     *      message = "カテゴリコードを入力してください。"
+     * )
+     * @Assert\Length(
+     *       min = "1",
+     *       max = "64",
+     *       maxMessage = "カテゴリコードは{{ limit }}文字以内で入力してください。"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-Z0-9_-]+$/",
+     *     match=true,
+     *     message="カテゴリコードは半角英数字記号（記号はハイフンとアンダーバーのみ使用可能）で入力してください。"
+     * )
      */
     private $categoryCode;
 
@@ -33,6 +55,13 @@ class Categories
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=128, nullable=false)
+     * @Assert\NotBlank(
+     *      message = "カテゴリ名を入力してください。"
+     * )
+     * @Assert\Length(
+     *       max = "128",
+     *       maxMessage = "カテゴリ名は{{ limit }}文字以内で入力してください。"
+     * )
      */
     private $name;
 
@@ -50,6 +79,33 @@ class Categories
      */
     private $updatedAt;
 
+    /**
+     * @var \Atw\TestBundle\Entity\ArticleCategory
+     *
+     * @ORM\OneToMany(targetEntity="\Atw\TestBundle\Entity\ArticleCategory",
+     *              mappedBy="category", cascade={"persist", "remove"}
+     * )
+     */
+    private $articleCategories;
+
+    /**
+     * construct
+     */
+    public function __construct()
+    {
+        $this->articleCategories = new ArrayCollection();
+    }
+
+    /**
+     * Get articleCategories
+     *
+     * @return \Atw\TestBundle\Entity\ArticleCategory
+     */
+    public function getArticleCategories()
+    {
+        return $this->articleCategories;
+    }
+
 
 
     /**
@@ -66,7 +122,7 @@ class Categories
      * Set categoryCode
      *
      * @param string $categoryCode
-     * @return Categories
+     * @return Category
      */
     public function setCategoryCode($categoryCode)
     {
@@ -89,7 +145,7 @@ class Categories
      * Set name
      *
      * @param string $name
-     * @return Categories
+     * @return Category
      */
     public function setName($name)
     {
@@ -112,7 +168,7 @@ class Categories
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return Categories
+     * @return Category
      */
     public function setCreatedAt($createdAt)
     {
@@ -135,7 +191,7 @@ class Categories
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return Categories
+     * @return Category
      */
     public function setUpdatedAt($updatedAt)
     {

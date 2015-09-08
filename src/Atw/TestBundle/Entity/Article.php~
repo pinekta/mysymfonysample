@@ -5,12 +5,12 @@ namespace Atw\TestBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Articles
+ * Article
  *
- * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="unique_articles_thumbnail_path", columns={"thumbnail_path"})}, indexes={@ORM\Index(name="idx_articles_created_at", columns={"created_at"})})
+ * @ORM\Table(name="article", uniqueConstraints={@ORM\UniqueConstraint(name="unique_article_thumbnail_path", columns={"thumbnail_path"})}, indexes={@ORM\Index(name="idx_article_created_at", columns={"created_at"})})
  * @ORM\Entity
  */
-class Articles
+class Article
 {
     /**
      * @var integer
@@ -18,7 +18,7 @@ class Articles
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="articles_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="article_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 

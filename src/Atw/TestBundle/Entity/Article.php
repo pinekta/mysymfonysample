@@ -3,14 +3,22 @@
 namespace Atw\TestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Articles
+ * Article
  *
- * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="unique_articles_thumbnail_path", columns={"thumbnail_path"})}, indexes={@ORM\Index(name="idx_articles_created_at", columns={"created_at"})})
- * @ORM\Entity
+ * @UniqueEntity(
+ *     fields={"categoryCode"},
+ *     errorPath="categoryCode",
+ *     message="入力されたカテゴリコードは既に使用されています。"
+ * )
+ * @ORM\Table(name="article", uniqueConstraints={@ORM\UniqueConstraint(name="unique_article_thumbnail_path", columns={"thumbnail_path"})}, indexes={@ORM\Index(name="idx_article_created_at", columns={"created_at"})})
+ * @ORM\Entity(repositoryClass="Atw\TestBundle\Repository\ArticleRepository")
  */
-class Articles
+class Article
 {
     /**
      * @var integer
@@ -18,7 +26,7 @@ class Articles
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="articles_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="article_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -26,6 +34,14 @@ class Articles
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=128, nullable=false)
+     * @Assert\NotBlank(
+     *      message = "タイトルを入力してください。"
+     * )
+     * @Assert\Length(
+     *       min = "1",
+     *       max = "128",
+     *       maxMessage = "タイトルは{{ limit }}文字以内で入力してください。"
+     * )
      */
     private $title;
 
@@ -33,6 +49,14 @@ class Articles
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=256, nullable=false)
+     * @Assert\NotBlank(
+     *      message = "詳細を入力してください。"
+     * )
+     * @Assert\Length(
+     *       min = "1",
+     *       max = "256",
+     *       maxMessage = "詳細は{{ limit }}文字以内で入力してください。"
+     * )
      */
     private $description;
 
@@ -40,6 +64,20 @@ class Articles
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=512, nullable=false)
+     * @Assert\NotBlank(
+     *      message = "URLを入力してください。"
+     * )
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 512,
+     *      exactMessage = "URLは512文字以内で入力してください。",
+     *      minMessage   = "URLは512文字以内で入力してください。",
+     *      maxMessage   = "URLは512文字以内で入力してください。",
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^[ -~]+$/iu",
+     *     message = "URLは半角英数記号のみ入力可能です。"
+     * )
      */
     private $url;
 
@@ -65,6 +103,33 @@ class Articles
     private $updatedAt;
 
 
+    /**
+     * @var \Atw\TestBundle\Entity\ArticleCategory
+     *
+     * @ORM\OneToMany(targetEntity="\Atw\TestBundle\Entity\ArticleCategory",
+     *              mappedBy="article", cascade={"persist", "remove"}
+     * )
+     */
+    private $articleCategories;
+
+    /**
+     * construct
+     */
+    public function __construct()
+    {
+        $this->articleCategories = new ArrayCollection();
+    }
+
+    /**
+     * Get articleCategories
+     *
+     * @return \Atw\TestBundle\Entity\ArticleCategory
+     */
+    public function getArticleCategories()
+    {
+        return $this->articleCategories;
+    }
+
 
     /**
      * Get id
@@ -80,7 +145,7 @@ class Articles
      * Set title
      *
      * @param string $title
-     * @return Articles
+     * @return Article
      */
     public function setTitle($title)
     {
@@ -103,7 +168,7 @@ class Articles
      * Set description
      *
      * @param string $description
-     * @return Articles
+     * @return Article
      */
     public function setDescription($description)
     {
@@ -126,7 +191,7 @@ class Articles
      * Set url
      *
      * @param string $url
-     * @return Articles
+     * @return Article
      */
     public function setUrl($url)
     {
@@ -149,7 +214,7 @@ class Articles
      * Set thumbnailPath
      *
      * @param string $thumbnailPath
-     * @return Articles
+     * @return Article
      */
     public function setThumbnailPath($thumbnailPath)
     {
@@ -172,7 +237,7 @@ class Articles
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return Articles
+     * @return Article
      */
     public function setCreatedAt($createdAt)
     {
@@ -195,7 +260,7 @@ class Articles
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return Articles
+     * @return Article
      */
     public function setUpdatedAt($updatedAt)
     {
