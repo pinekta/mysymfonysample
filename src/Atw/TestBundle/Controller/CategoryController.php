@@ -65,6 +65,15 @@ class CategoryController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            // TODO: Modelなどに委譲すべき
+            // TODO: 日付がPHPで取得する日付に依存してしまいテストしづらくなるので、切り出したほうがよい
+            if ($entity->getCreatedAt() === null) {
+                $entity->setCreatedAt(new \DateTime());
+            }
+            if ($entity->getUpdatedAt() === null) {
+                $entity->setUpdatedAt(new \DateTime());
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
@@ -162,7 +171,7 @@ class CategoryController extends Controller
 
         return array(
             'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -209,12 +218,12 @@ class CategoryController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('category_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('category_show', array('id' => $id)));
         }
 
         return array(
             'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }

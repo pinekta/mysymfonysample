@@ -1,0 +1,33 @@
+        <div class="registBlock mB10">
+            {{ form_widget(form._token) }}
+            <table summary="入力">
+                <colgroup>
+                    <col class="w120"/>
+                    <col class="wAuto"/>
+                </colgroup>
+                <tbody>
+                {% if entity.id %}
+                <tr>
+                    <th>ID</th>
+                    <td><p>{{ entity.id }}</p></td>
+                </tr>
+                {% endif %}
+                <tr class="even">
+                    <th>カテゴリ―コード</span></th>
+                    <td>
+                        {{ form_widget(form.categoryCode) }}
+                        {{ form_errors(form.categoryCode) }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>名称</th>
+                    <td>
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.registBlock -->
+

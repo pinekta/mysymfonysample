@@ -17,8 +17,6 @@ class CategoryType extends AbstractType
         $builder
             ->add('categoryCode')
             ->add('name')
-            ->add('createdAt')
-            ->add('updatedAt')
         ;
     }
     

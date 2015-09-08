@@ -3,14 +3,17 @@
 {% block body -%}
     <h1>Category edit</h1>
 
-    {{ form(edit_form) }}
-
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('category') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    {{ form_errors(form) }}
+    {{ form_start(form, {'action':path('category_update', {'id': entity.id}), 'method': 'PUT'}) }}
+        {% include 'AtwTestBundle:Category:form.html.twig' with {'entity': entity} %}
+    {{ form_end(form) }}
+	
+    <ul class="record_actions">
+		<li>
+			<a href="{{ path('category') }}">
+				Back to the list
+			</a>
+		</li>
+		<li>{{ form(delete_form) }}</li>
+	</ul>
 {% endblock %}
