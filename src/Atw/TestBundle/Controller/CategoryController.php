@@ -2,6 +2,8 @@
 
 namespace Atw\TestBundle\Controller;
 
+use Knp\Component\Pager\Paginator;
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -17,19 +19,33 @@ use Atw\TestBundle\Form\CategoryType;
  */
 class CategoryController extends Controller
 {
-
     /**
      * Lists all Category entities.
      *
-     * @Route("/", name="category")
+     * @Route("/{page}", name="category", requirements={"page" = "^[1-9][0-9]*$"}, defaults={"page" = "1"})
      * @Method("GET")
      * @Template()
+     * @param Request $request
+     * @param string  $page
+     * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request, $page)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AtwTestBundle:Category')->findAll();
+        $limitPerPage = 10;
+        $pageRange = 5;
+
+        /** @var Paginator $paginator */
+        $paginator = $this->get('knp_paginator');
+        /** @var SlidingPagination $entities */
+        $entities = $paginator->paginate(
+            $em->getRepository('AtwTestBundle:Category')->findAll(),
+            $page,
+            $limitPerPage
+        );
+        $entities->setPageRange($pageRange);
+        $entities->setUsedRoute('category');
 
         return array(
             'entities' => $entities,
@@ -102,7 +118,7 @@ class CategoryController extends Controller
     /**
      * Finds and displays a Category entity.
      *
-     * @Route("/{id}", name="category_show")
+     * @Route("/show/{id}", name="category_show")
      * @Method("GET")
      * @Template()
      */

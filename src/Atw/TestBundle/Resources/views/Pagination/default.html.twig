@@ -1,0 +1,34 @@
+{% if pageCount > 0 %}
+<div class="pagerBlock mB5">
+    <div class="status">{{ last }}ページ中<span class="strong">{{ current }}ページ目</span>を表示&nbsp;&nbsp;合計：<span class="strong">{{ totalCount }}件</span></div>
+    <div class="pager">
+        {% if first is defined and current != first %}
+            <a href="{{ path(route, query|merge({(pageParameterName): first})) }}">最初のページ</a>
+        {% endif %}
+
+        {% if previous is defined %}
+            <span><a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&nbsp;&nbsp;&lt;&lt;&nbsp;前の10件</a></span>
+        {% endif %}
+
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <span>
+                    <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">[{{ page }}]</a>
+                </span>
+            {% else %}
+                <span class="current">[{{ page }}]</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if next is defined %}
+            <span>
+                <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">次の10件&nbsp;&gt;&gt;</a>
+            </span>
+        {% endif %}
+
+        {% if last is defined and current != last %}
+            &nbsp;&nbsp;<a href="{{ path(route, query|merge({(pageParameterName): last})) }}">最後のページ</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
