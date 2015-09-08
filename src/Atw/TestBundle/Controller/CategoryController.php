@@ -75,8 +75,10 @@ class CategoryController extends Controller
             }
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+            $em->transactional(function () use ($em, $entity) {
+    	        $em->persist($entity);
+	        //$em->flush();  // transactionalを使用する場合はflushは不要
+            });
 
             return $this->redirect($this->generateUrl('category_show', array('id' => $entity->getId())));
         }
