@@ -1,0 +1,60 @@
+<?php
+
+namespace Atw\TestBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ArticleCategories
+ *
+ * @ORM\Table(name="article_categories", indexes={@ORM\Index(name="idx_article_categories_article_id", columns={"article_id"}), @ORM\Index(name="idx_article_categories_category_id", columns={"category_id"})})
+ * @ORM\Entity
+ */
+class ArticleCategories
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="article_categories_id_seq", allocationSize=1, initialValue=1)
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetimetz", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetimetz", nullable=false)
+     */
+    private $updatedAt;
+
+    /**
+     * @var \Articles
+     *
+     * @ORM\ManyToOne(targetEntity="Articles")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * })
+     */
+    private $article;
+
+    /**
+     * @var \Categories
+     *
+     * @ORM\ManyToOne(targetEntity="Categories")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     * })
+     */
+    private $category;
+
+
+}
