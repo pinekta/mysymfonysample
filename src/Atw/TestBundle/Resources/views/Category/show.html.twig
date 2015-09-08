@@ -19,11 +19,11 @@
             </tr>
             <tr>
                 <th>Createdat</th>
-                <td>{{ entity.createdAt }}</td>
+                <td>{{ entity.createdAt.format('Y/m/d H:i:s') }}</td>
             </tr>
             <tr>
                 <th>Updatedat</th>
-                <td>{{ entity.updatedAt }}</td>
+                <td>{{ entity.updatedAt.format('Y/m/d H:i:s') }}</td>
             </tr>
         </tbody>
     </table>
