@@ -126,15 +126,6 @@ class CategoryController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            // TODO: Modelなどに委譲すべき
-            // TODO: 日付がPHPで取得する日付に依存してしまいテストしづらくなるので、切り出したほうがよい
-            if ($entity->getCreatedAt() === null) {
-                $entity->setCreatedAt(new \DateTime());
-            }
-            if ($entity->getUpdatedAt() === null) {
-                $entity->setUpdatedAt(new \DateTime());
-            }
-
             $em = $this->getDoctrine()->getManager();
             $em->transactional(function () use ($em, $entity) {
                 $em->persist($entity);
@@ -196,7 +187,6 @@ class CategoryController extends Controller
 
             $em->transactional(function () use ($em, $entity) {
                 $em->remove($entity);
-                //$em->flush();  // transactionalを使用する場合はflushは不要
             });
         }
 

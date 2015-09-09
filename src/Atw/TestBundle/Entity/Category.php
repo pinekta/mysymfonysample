@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Atw\TestBundle\Entity\Support\CreateUpdateDtLifeCycleHelperTrait;
 
 /**
  * Category
@@ -18,9 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\Table(name="category", uniqueConstraints={@ORM\UniqueConstraint(name="unique_category_category_code", columns={"category_code"})})
  * @ORM\Entity(repositoryClass="Atw\TestBundle\Repository\CategoryRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Category
 {
+    use CreateUpdateDtLifeCycleHelperTrait;
+
     /**
      * @var integer
      *
