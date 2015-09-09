@@ -18,7 +18,6 @@ class CategoryType extends AbstractType
         $builder
             ->add('categoryCode')
             ->add('name')
-            //->add('expiredAt', 'datetime')
             ->add(
                 $builder->create('expiredAt', 'text', [
                     'attr'     => ['class' => 'hoge'],
