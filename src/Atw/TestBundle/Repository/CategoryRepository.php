@@ -3,6 +3,7 @@
 namespace Atw\TestBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Atw\TestBundle\Repository\Support\TryGetEntityTrait;
 
 /**
  * Class CategoryRepository
@@ -11,6 +12,8 @@ use Doctrine\ORM\EntityRepository;
  */
 class CategoryRepository extends EntityRepository
 {
+    use TryGetEntityTrait;
+
     /**
      * カテゴリ取得
      * @param array $where

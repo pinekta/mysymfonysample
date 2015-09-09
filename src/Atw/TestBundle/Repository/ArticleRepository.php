@@ -3,6 +3,7 @@
 namespace Atw\TestBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Atw\TestBundle\Repository\Support\TryGetEntityTrait;
 
 /**
  * Class ArticleRepository
@@ -11,4 +12,5 @@ use Doctrine\ORM\EntityRepository;
  */
 class ArticleRepository extends EntityRepository
 {
+    use TryGetEntityTrait;
 }
