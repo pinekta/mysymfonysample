@@ -8,3 +8,9 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
             - @validator
+
+    datetime_format_extension:
+        class: Atw\TestBundle\Twig\DateTimeFormatExtension
+        tags:
+            - { name: twig.extension }
+

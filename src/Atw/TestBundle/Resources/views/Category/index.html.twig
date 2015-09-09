@@ -9,12 +9,13 @@
     <table class="records_list">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Categorycode</th>
-                <th>Name</th>
-                <th>Createdat</th>
-                <th>Updatedat</th>
-                <th>Actions</th>
+                <th>ID</th>
+                <th>カテゴリーコード</th>
+                <th>名称</th>
+                <th>有効期限</th>
+                <th>作成日時</th>
+                <th>更新日時</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -23,8 +24,9 @@
                 <td><a href="{{ path('category_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>{{ entity.categoryCode }}</td>
                 <td>{{ entity.name }}</td>
-                <td>{{ entity.createdAt.format('Y/m/d H:i:s') }}</td>
-                <td>{{ entity.updatedAt.format('Y/m/d H:i:s') }}</td>
+                <td>{{ entity.expiredAt|datetime_format }}</td>
+                <td>{{ entity.createdAt|datetime_format }}</td>
+                <td>{{ entity.updatedAt|datetime_format }}</td>
                 <td>
                 <ul>
                     <li>

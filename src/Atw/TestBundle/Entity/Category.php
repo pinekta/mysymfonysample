@@ -71,6 +71,14 @@ class Category
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="expired_at", type="datetimetz", nullable=true)
+     * @Assert\DateTime(message = "日付形式の文字列を入力してください。")
+     */
+    private $expiredAt;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="created_at", type="datetimetz", nullable=false)
      */
     private $createdAt;
@@ -168,6 +176,29 @@ class Category
     }
 
     /**
+     * Set expiredAt
+     *
+     * @param \DateTime $expiredAt
+     * @return Category
+     */
+    public function setExpiredAt($expiredAt)
+    {
+        $this->expiredAt = $expiredAt;
+
+        return $this;
+    }
+
+    /**
+     * Get expiredAt
+     *
+     * @return \DateTime 
+     */
+    public function getExpiredAt()
+    {
+        return $this->expiredAt;
+    }
+
+    /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
@@ -211,5 +242,14 @@ class Category
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function prePersistAndUpdateForExpiredAt()
+    {
+        $this->expiredAt = $this->expiredAt ? new \DateTime($this->expiredAt) : null;
     }
 }

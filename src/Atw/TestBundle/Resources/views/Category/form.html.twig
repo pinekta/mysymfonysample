@@ -1,3 +1,6 @@
+    {% set calendarInputIds = [{'start': 'atw_testbundle_category_expiredAt', 'end': 'atw_testbundle_category_expiredAt'}] %}
+    {% include 'AtwTestBundle:Common:rangeDatePicker.html.twig' with {'calendarInputIds': calendarInputIds} %}
+ 
         <div class="registBlock mB10">
             {{ form_widget(form._token) }}
             <table summary="入力">
@@ -24,6 +27,13 @@
                     <td>
                         {{ form_widget(form.name) }}
                         {{ form_errors(form.name) }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>有効期限</th>
+                    <td>
+                        {{ form_widget(form.expiredAt) }}
+                        {{ form_errors(form.expiredAt) }}
                     </td>
                 </tr>
                 </tbody>

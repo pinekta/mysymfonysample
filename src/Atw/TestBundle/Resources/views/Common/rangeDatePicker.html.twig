@@ -1,0 +1,23 @@
+<link href="{{ asset('bundles/atwtest/css/redmond/jquery-ui.css') }}" rel="stylesheet" media="all" type="text/css" />
+<link href="{{ asset('bundles/atwtest/css/jquery-ui-timepicker-addon.css') }}" rel="stylesheet" type="text/css" media="all"/>
+<script type="text/javascript" src="{{ asset('bundles/atwtest/js/jquery-ui.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/atwtest/js/jquery-ui-timepicker-addon.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/atwtest/js/i18n/jquery-ui-timepicker-addon-i18n.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/atwtest/js/jquery-ui-sliderAccess.js') }}"></script>
+
+{% if calendarType is defined and calendarType == 'date' %}
+    {% set jsPath = 'bundles/atwtest/js/set_range_date_picker.js' %}
+    {% set functionName = 'set_range_date_picker' %}
+{% else %}
+    {% set jsPath = 'bundles/atwtest/js/set_range_datetime_picker.js' %}
+    {% set functionName = 'set_range_datetime_picker' %}
+{% endif %}
+
+<script type="text/javascript" src="{{ asset(jsPath) }}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        {% for pairId in calendarInputIds %}
+            {{ functionName }}('{{ pairId.start }}', '{{ pairId.end }}');
+        {% endfor %}
+    });
+</script>

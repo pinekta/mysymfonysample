@@ -5,6 +5,7 @@ namespace Atw\TestBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Atw\TestBundle\Form\Support\FormatDatetimeTransformer;
 
 class CategoryType extends AbstractType
 {
@@ -17,9 +18,17 @@ class CategoryType extends AbstractType
         $builder
             ->add('categoryCode')
             ->add('name')
+            //->add('expiredAt', 'datetime')
+            ->add(
+                $builder->create('expiredAt', 'text', [
+                    'attr'     => ['class' => 'hoge'],
+                    'required' => false,
+                ])->addViewTransformer(new FormatDatetimeTransformer())
+        );
+
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
