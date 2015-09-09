@@ -38,11 +38,7 @@ class CategoryController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var Paginator $paginator */
-        $paginator = $this->get('knp_paginator');
-        /** @var SlidingPagination $entities */
-        $entities = $paginator->paginate(
-            //$em->getRepository('AtwTestBundle:Category')->findAll(),
+        $entities = $this->get('knp_paginator')->paginate(
             $em->getRepository('AtwTestBundle:Category')->findNotExpiredList(),
             $page,
             $this->getParameter('LIST_DISPLAY_LIMIT')
