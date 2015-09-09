@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Atw\TestBundle\Controller\Support\CreateFormHelperTrait;
 use Atw\TestBundle\Entity\Category;
 use Atw\TestBundle\Form\CategoryType;
 
@@ -19,6 +20,8 @@ use Atw\TestBundle\Form\CategoryType;
  */
 class CategoryController extends Controller
 {
+    use CreateFormHelperTrait;
+
     /**
      * Lists all Category entities.
      *
@@ -61,7 +64,8 @@ class CategoryController extends Controller
     public function createAction(Request $request)
     {
         $entity = new Category();
-        $form = $this->createCreateForm($entity);
+        //$form = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity, new CategoryType(), 'category_create');
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -99,7 +103,8 @@ class CategoryController extends Controller
     public function newAction()
     {
         $entity = new Category();
-        $form   = $this->createCreateForm($entity);
+        //$form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity, new CategoryType(), 'category_create');
 
         return array(
             'entity' => $entity,
@@ -124,8 +129,10 @@ class CategoryController extends Controller
             throw $this->createNotFoundException('Unable to find Category entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        //$editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($entity, new CategoryType(), 'category_update');
+        //$deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($id, 'category_delete');
 
         return array(
             'entity'      => $entity,
@@ -151,8 +158,10 @@ class CategoryController extends Controller
             throw $this->createNotFoundException('Unable to find Category entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        //$deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($id, 'category_delete');
+        //$editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($entity, new CategoryType(), 'category_update');
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -176,7 +185,8 @@ class CategoryController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
+        //$form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($id, 'category_delete');
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -211,58 +221,12 @@ class CategoryController extends Controller
             throw $this->createNotFoundException('Unable to find Category entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        //$deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($id, 'category_delete');
 
         return array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
         );
-    }
-
-    /**
-     * Creates a form to create a Category entity.
-     * @param Category $entity The entity
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createCreateForm(Category $entity)
-    {
-        $form = $this->createForm(new CategoryType(), $entity, [
-            'action' => $this->generateUrl('category_create'),
-            'method' => 'POST',
-        ]);
-        $form->add('submit', 'submit', ['label' => '登録']);
-        return $form;
-    }
-
-    /**
-    * Creates a form to edit a Category entity.
-    *
-    * @param Category $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Category $entity)
-    {
-        $form = $this->createForm(new CategoryType(), $entity, [
-            'action' => $this->generateUrl('category_update', ['id' => $entity->getId()]),
-            'method' => 'PUT',
-        ]);
-        $form->add('submit', 'submit', ['label' => '更新']);
-        return $form;
-    }
-
-    /**
-     * Creates a form to delete a Category entity by id.
-     * @param mixed $id The entity id
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('category_delete', ['id' => $id]))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', ['label' => '削除'])
-            ->getForm()
-        ;
     }
 }
