@@ -125,20 +125,14 @@ class CategoryController extends Controller
         $form = $this->createCreateForm($entity, new CategoryType(), 'category_create');
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->transactional(function () use ($em, $entity) {
-                $em->persist($entity);
-                //$em->flush();  // transactionalを使用する場合はflushは不要
-            });
-
-            return $this->redirect($this->generateUrl('category_show', ['id' => $entity->getId()]));
+        try {
+            return $this->redirect($this->tryUpdateInsertAndGetUrl($entity));
+        } catch (\Exception $e) {
+            return [
+                'entity' => $entity,
+                'form'   => $form->createView(),
+            ];
         }
-
-        return [
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ];
     }
 
     /**
@@ -157,17 +151,15 @@ class CategoryController extends Controller
         $editForm = $this->createEditForm($entity, new CategoryType(), 'category_update');
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('category_show', ['id' => $id]));
+        try {
+            return $this->redirect($this->tryUpdateInsertAndGetUrl($entity));
+        } catch (\Exception $e) {
+            return [
+                'entity' => $entity,
+                'form'   => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+            ];
         }
-
-        return [
-            'entity' => $entity,
-            'form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ];
     }
 
     /**
@@ -175,21 +167,39 @@ class CategoryController extends Controller
      *
      * @Route("/{id}", name="category_delete")
      * @Method("DELETE")
+     * @Template("AtwTestBundle:Category:edit.html.twig")
      */
     public function deleteAction(Request $request, $id)
     {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AtwTestBundle:Category')->tryGetEntityById($id);
+
         $form = $this->createDeleteForm($id, 'category_delete');
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AtwTestBundle:Category')->tryGetEntityById($id);
-
-            $em->transactional(function () use ($em, $entity) {
-                $em->remove($entity);
-            });
+        try {
+            $manager = $this->get('category_manager_interface');
+            $manager->tryDelete($entity);
+            return $this->redirect($this->generateUrl('category'));
+        } catch (\Exception $e) {
+            $editForm = $this->createEditForm($entity, new CategoryType(), 'category_update');
+            return [
+                'entity' => $entity,
+                'form'   => $editForm->createView(),
+                'delete_form' => $form->createView(),
+            ];
         }
+    }
 
-        return $this->redirect($this->generateUrl('category'));
+    private function tryUpdateInsertAndGetUrl(Category $entity)
+    {
+        try {
+            $manager = $this->get('category_manager_interface');
+            $manager->tryUpdateInsert($entity);
+            return $this->generateUrl('category_show', ['id' => $entity->getId()]);
+        } catch (\Exception $e) {
+            // TODO:入力エラーの場合は独自のExceptionにしたほうがよい
+            throw $e;
+        }
     }
 }

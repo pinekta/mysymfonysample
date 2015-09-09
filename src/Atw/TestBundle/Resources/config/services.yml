@@ -2,11 +2,9 @@ parameters:
     LIST_DISPLAY_LIMIT: 10
     LIST_DISPLAY_PAGE_RANGE: 5
 
-#services:
-#    hoge.hoge:
-#        class: Atw\TestBundle\hoge\hoger
-#        arguments:
-#            - @logger
-#            - @doctrine.orm.default_entity_manager
-#            - @hoge.hoger_interface
-#            - %data_get_tg%
+services:
+    category_manager_interface:
+        class: Atw\TestBundle\Service\Category\CategoryManager
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @validator
