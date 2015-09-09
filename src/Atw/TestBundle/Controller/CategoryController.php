@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Atw\TestBundle\Controller\Support\CreateFormHelperTrait;
+use Atw\TestBundle\Controller\Support\FlashBagTrait;
 use Atw\TestBundle\Entity\Category;
 use Atw\TestBundle\Form\CategoryType;
 
@@ -21,6 +22,7 @@ use Atw\TestBundle\Form\CategoryType;
 class CategoryController extends Controller
 {
     use CreateFormHelperTrait;
+    use FlashBagTrait;
 
     /**
      * Lists all Category entities.
@@ -180,6 +182,7 @@ class CategoryController extends Controller
         try {
             $manager = $this->get('category_manager_interface');
             $manager->tryDelete($entity);
+            $this->flashNotice("データを削除しました。");
             return $this->redirect($this->generateUrl('category'));
         } catch (\Exception $e) {
             $editForm = $this->createEditForm($entity, new CategoryType(), 'category_update');
@@ -196,6 +199,7 @@ class CategoryController extends Controller
         try {
             $manager = $this->get('category_manager_interface');
             $manager->tryUpdateInsert($entity);
+            $this->flashNotice("データを更新しました。");
             return $this->generateUrl('category_show', ['id' => $entity->getId()]);
         } catch (\Exception $e) {
             // TODO:入力エラーの場合は独自のExceptionにしたほうがよい
