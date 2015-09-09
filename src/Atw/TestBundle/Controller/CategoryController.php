@@ -36,19 +36,15 @@ class CategoryController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        // TODO: 共通定数化
-        $limitPerPage = 10;
-        $pageRange = 5;
-
         /** @var Paginator $paginator */
         $paginator = $this->get('knp_paginator');
         /** @var SlidingPagination $entities */
         $entities = $paginator->paginate(
             $em->getRepository('AtwTestBundle:Category')->findAll(),
             $page,
-            $limitPerPage
+            $this->getParameter('LIST_DISPLAY_LIMIT')
         );
-        $entities->setPageRange($pageRange);
+        $entities->setPageRange($this->getParameter('LIST_DISPLAY_PAGE_RANGE'));
         $entities->setUsedRoute('category');
 
         return [
