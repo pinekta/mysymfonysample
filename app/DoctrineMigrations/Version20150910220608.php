@@ -17,10 +17,10 @@ class Version20150910220608 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $sql[] = <<<SQL
-ALTER TABLE "category"
-    ADD COLUMN "prefecture" VARCHAR(2) NULL,
-    ADD COLUMN "sex" INTEGER NULL,
-    ADD COLUMN "enabled" INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE "article"
+    ADD COLUMN "type" INTEGER NULL,
+    ADD COLUMN "commentable" INTEGER NULL,
+    ADD COLUMN "display_ad" INTEGER NOT NULL DEFAULT 1;
 SQL;
 
         $this->addSql($sql);
@@ -33,10 +33,10 @@ SQL;
     {
         // this down() migration is auto-generated, please modify it to your needs
         $sql[] = <<<SQL
-ALTER TABLE "category"
-    DROP COLUMN "prefecture",
-    DROP COLUMN "sex",
-    DROP COLUMN "enabled";
+ALTER TABLE "article"
+    DROP COLUMN "type",
+    DROP COLUMN "commentable",
+    DROP COLUMN "display_ad";
 SQL;
 
         $this->addSql($sql);
