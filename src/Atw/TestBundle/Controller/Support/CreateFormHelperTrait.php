@@ -14,7 +14,7 @@ trait CreateFormHelperTrait
     private function createCreateForm($entity, $formType, $route)
     {
         $form = $this->createForm($formType, $entity, [
-            'action' => $this->generateUrl('category_create'),
+            'action' => $this->generateUrl($route),
             'method' => 'POST',
         ]);
         $form->add('submit', 'submit', ['label' => '登録']);
