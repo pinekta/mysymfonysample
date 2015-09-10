@@ -3,6 +3,8 @@
 {% block body -%}
     <h1>Category edit</h1>
 
+    {% include 'AtwTestBundle:Common:flashNotices.html.twig' %}
+
     {{ form_errors(form) }}
     {{ form_start(form, {'action':path('category_update', {'id': entity.id}), 'method': 'PUT'}) }}
         {% include 'AtwTestBundle:Category:form.html.twig' with {'entity': entity} %}

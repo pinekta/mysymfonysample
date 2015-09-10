@@ -4,6 +4,8 @@
 {% block body -%}
     <h1>Category creation</h1>
 
+    {% include 'AtwTestBundle:Common:flashNotices.html.twig' %}
+
     {{ form_errors(form) }}
     {{ form_start(form, {'action':path('category_create'), 'method': 'POST'}) }}
         {% include 'AtwTestBundle:Category:form.html.twig' %}

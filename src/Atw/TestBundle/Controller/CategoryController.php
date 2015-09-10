@@ -127,6 +127,7 @@ class CategoryController extends Controller
         try {
             return $this->redirect($this->tryUpdateInsertAndGetUrl($entity));
         } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
             return [
                 'entity' => $entity,
                 'form'   => $form->createView(),
@@ -153,6 +154,7 @@ class CategoryController extends Controller
         try {
             return $this->redirect($this->tryUpdateInsertAndGetUrl($entity));
         } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
             return [
                 'entity' => $entity,
                 'form'   => $editForm->createView(),
@@ -182,6 +184,7 @@ class CategoryController extends Controller
             $this->flashNotice("データを削除しました。");
             return $this->redirect($this->generateUrl('category'));
         } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
             $editForm = $this->createEditForm($entity, new CategoryType(), 'category_update');
             return [
                 'entity' => $entity,
@@ -199,6 +202,7 @@ class CategoryController extends Controller
             $this->flashNotice("データを更新しました。");
             return $this->generateUrl('category_show', ['id' => $entity->getId()]);
         } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
             // TODO:入力エラーの場合は独自のExceptionにしたほうがよい
             throw $e;
         }
