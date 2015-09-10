@@ -13,4 +13,9 @@ use Atw\TestBundle\Repository\Support\TryGetEntityTrait;
 class ArticleRepository extends EntityRepository
 {
     use TryGetEntityTrait;
+
+    public function findAll($where = [], $order = ['id' => 'DESC'])
+    {
+        return $this->findBy($where, $order);
+    }
 }

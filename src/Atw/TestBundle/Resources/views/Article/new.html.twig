@@ -1,15 +1,21 @@
 {% extends '::base.html.twig' %}
 
+
 {% block body -%}
     <h1>Article creation</h1>
 
-    {{ form(form) }}
+    {% include 'AtwTestBundle:Common:flashNotices.html.twig' %}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('article') }}">
-            Back to the list
-        </a>
-    </li>
-</ul>
+    {{ form_errors(form) }}
+    {{ form_start(form, {'action':path('article_create'), 'method': 'POST'}) }}
+        {% include 'AtwTestBundle:Article:form.html.twig' %}
+    {{ form_end(form) }}
+
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('article') }}">
+                Back to the list
+            </a>
+        </li>
+    </ul>
 {% endblock %}

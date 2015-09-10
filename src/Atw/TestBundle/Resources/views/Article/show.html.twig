@@ -3,50 +3,52 @@
 {% block body -%}
     <h1>Article</h1>
 
+    {% include 'AtwTestBundle:Common:flashNotices.html.twig' %}
+
     <table class="record_properties">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th>ID</th>
                 <td>{{ entity.id }}</td>
             </tr>
             <tr>
-                <th>Title</th>
+                <th>タイトル</th>
                 <td>{{ entity.title }}</td>
             </tr>
             <tr>
-                <th>Description</th>
-                <td>{{ entity.description }}</td>
+                <th>記事内容</th>
+                <td>{{ entity.description|nl2br }}</td>
             </tr>
             <tr>
-                <th>Url</th>
+                <th>URL</th>
                 <td>{{ entity.url }}</td>
             </tr>
             <tr>
-                <th>Thumbnailpath</th>
-                <td>{{ entity.thumbnailPath }}</td>
+                <th>サムネイル</th>
+                <td><img src="{{ entity.thumbnailPath }}" alt="{{ entity.title }}"></td>
             </tr>
             <tr>
-                <th>Createdat</th>
-                <td>{{ entity.createdAt }}</td>
+                <th>登録日時</th>
+                <td>{{ entity.createdAt|datetime_format }}</td>
             </tr>
             <tr>
-                <th>Updatedat</th>
-                <td>{{ entity.updatedAt }}</td>
+                <th>更新日時</th>
+                <td>{{ entity.updatedAt|datetime_format }}</td>
             </tr>
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('article') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('article_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('article') }}">
+                Back to the list
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('article_edit', { 'id': entity.id }) }}">
+                Edit
+            </a>
+        </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
 {% endblock %}

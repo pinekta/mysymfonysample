@@ -2,11 +2,15 @@
 
 namespace Atw\TestBundle\Controller;
 
+use Knp\Component\Pager\Paginator;
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Atw\TestBundle\Controller\Support\CreateFormHelperTrait;
+use Atw\TestBundle\Controller\Support\FlashBagTrait;
 use Atw\TestBundle\Entity\Article;
 use Atw\TestBundle\Form\ArticleType;
 
@@ -17,68 +21,35 @@ use Atw\TestBundle\Form\ArticleType;
  */
 class ArticleController extends Controller
 {
+    use CreateFormHelperTrait;
+    use FlashBagTrait;
 
     /**
      * Lists all Article entities.
      *
-     * @Route("/", name="article")
+     * @Route("/{page}", name="article", requirements={"page" = "^[1-9][0-9]*$"}, defaults={"page" = "1"})
      * @Method("GET")
      * @Template()
+     * @param Request $request
+     * @param string  $page
+     * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request, $page)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AtwTestBundle:Article')->findAll();
+        $entities = $this->get('knp_paginator')->paginate(
+            //$em->getRepository('AtwTestBundle:Article')->findNotExpiredList(),
+            $em->getRepository('AtwTestBundle:Article')->findAll(),
+            $page,
+            $this->getParameter('LIST_DISPLAY_LIMIT')
+        );
+        $entities->setPageRange($this->getParameter('LIST_DISPLAY_PAGE_RANGE'));
+        $entities->setUsedRoute('article');
 
-        return array(
+        return [
             'entities' => $entities,
-        );
-    }
-    /**
-     * Creates a new Article entity.
-     *
-     * @Route("/", name="article_create")
-     * @Method("POST")
-     * @Template("AtwTestBundle:Article:new.html.twig")
-     */
-    public function createAction(Request $request)
-    {
-        $entity = new Article();
-        $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('article_show', array('id' => $entity->getId())));
-        }
-
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
-    }
-
-    /**
-     * Creates a form to create a Article entity.
-     *
-     * @param Article $entity The entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createCreateForm(Article $entity)
-    {
-        $form = $this->createForm(new ArticleType(), $entity, array(
-            'action' => $this->generateUrl('article_create'),
-            'method' => 'POST',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Create'));
-
-        return $form;
+        ];
     }
 
     /**
@@ -91,37 +62,12 @@ class ArticleController extends Controller
     public function newAction()
     {
         $entity = new Article();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity, new ArticleType(), 'article_create');
 
-        return array(
+        return [
             'entity' => $entity,
             'form'   => $form->createView(),
-        );
-    }
-
-    /**
-     * Finds and displays a Article entity.
-     *
-     * @Route("/{id}", name="article_show")
-     * @Method("GET")
-     * @Template()
-     */
-    public function showAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('AtwTestBundle:Article')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Article entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
-        );
+        ];
     }
 
     /**
@@ -134,41 +80,62 @@ class ArticleController extends Controller
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AtwTestBundle:Article')->tryGetEntityById($id);
 
-        $entity = $em->getRepository('AtwTestBundle:Article')->find($id);
+        $editForm = $this->createEditForm($entity, new ArticleType(), 'article_update');
+        $deleteForm = $this->createDeleteForm($id, 'article_delete');
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Article entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+        return [
+            'entity' => $entity,
+            'form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ];
     }
 
     /**
-    * Creates a form to edit a Article entity.
-    *
-    * @param Article $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Article $entity)
+     * Finds and displays a Article entity.
+     *
+     * @Route("/show/{id}", name="article_show")
+     * @Method("GET")
+     * @Template()
+     */
+    public function showAction($id)
     {
-        $form = $this->createForm(new ArticleType(), $entity, array(
-            'action' => $this->generateUrl('article_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AtwTestBundle:Article')->tryGetEntityById($id);
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $deleteForm = $this->createDeleteForm($id, 'article_delete');
 
-        return $form;
+        return [
+            'entity'      => $entity,
+            'delete_form' => $deleteForm->createView(),
+        ];
     }
+
+    /**
+     * Creates a new Article entity.
+     *
+     * @Route("/", name="article_create")
+     * @Method("POST")
+     * @Template("AtwTestBundle:Article:new.html.twig")
+     */
+    public function createAction(Request $request)
+    {
+        $entity = new Article();
+        $form = $this->createCreateForm($entity, new ArticleType(), 'article_create');
+        $form->handleRequest($request);
+
+        try {
+            return $this->redirect($this->tryUpdateInsertAndGetUrl($entity));
+        } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
+            return [
+                'entity' => $entity,
+                'form'   => $form->createView(),
+            ];
+        }
+    }
+
     /**
      * Edits an existing Article entity.
      *
@@ -179,69 +146,66 @@ class ArticleController extends Controller
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AtwTestBundle:Article')->tryGetEntityById($id);
 
-        $entity = $em->getRepository('AtwTestBundle:Article')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Article entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($id, 'article_delete');
+        $editForm = $this->createEditForm($entity, new ArticleType(), 'article_update');
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('article_edit', array('id' => $id)));
+        try {
+            return $this->redirect($this->tryUpdateInsertAndGetUrl($entity));
+        } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
+            return [
+                'entity' => $entity,
+                'form'   => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+            ];
         }
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
     }
+
     /**
      * Deletes a Article entity.
      *
      * @Route("/{id}", name="article_delete")
      * @Method("DELETE")
+     * @Template("AtwTestBundle:Article:edit.html.twig")
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AtwTestBundle:Article')->tryGetEntityById($id);
+
+        $form = $this->createDeleteForm($id, 'article_delete');
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AtwTestBundle:Article')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Article entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
+        try {
+            $manager = $this->get('article_manager_interface');
+            $manager->tryDelete($entity);
+            $this->flashNotice("データを削除しました。");
+            return $this->redirect($this->generateUrl('article'));
+        } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
+            $editForm = $this->createEditForm($entity, new ArticleType(), 'article_update');
+            return [
+                'entity' => $entity,
+                'form'   => $editForm->createView(),
+                'delete_form' => $form->createView(),
+            ];
         }
-
-        return $this->redirect($this->generateUrl('article'));
     }
 
-    /**
-     * Creates a form to delete a Article entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
+    private function tryUpdateInsertAndGetUrl(Article $entity)
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('article_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+        try {
+            $manager = $this->get('article_manager_interface');
+            $manager->tryUpdateInsert($entity);
+            $this->flashNotice("データを更新しました。");
+            return $this->generateUrl('article_show', ['id' => $entity->getId()]);
+        } catch (\Exception $e) {
+            $this->flashError($e->getMessage());
+            // TODO:入力エラーの場合は独自のExceptionにしたほうがよい
+            throw $e;
+        }
     }
 }

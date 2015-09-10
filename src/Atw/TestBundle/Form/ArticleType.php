@@ -19,11 +19,9 @@ class ArticleType extends AbstractType
             ->add('description')
             ->add('url')
             ->add('thumbnailPath')
-            ->add('createdAt')
-            ->add('updatedAt')
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */

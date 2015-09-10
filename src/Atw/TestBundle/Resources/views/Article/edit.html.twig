@@ -3,14 +3,19 @@
 {% block body -%}
     <h1>Article edit</h1>
 
-    {{ form(edit_form) }}
+    {% include 'AtwTestBundle:Common:flashNotices.html.twig' %}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('article') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    {{ form_errors(form) }}
+    {{ form_start(form, {'action':path('article_update', {'id': entity.id}), 'method': 'PUT'}) }}
+        {% include 'AtwTestBundle:Article:form.html.twig' with {'entity': entity} %}
+    {{ form_end(form) }}
+
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('article') }}">
+                Back to the list
+            </a>
+        </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
 {% endblock %}

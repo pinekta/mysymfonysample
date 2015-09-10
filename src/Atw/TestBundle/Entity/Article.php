@@ -6,20 +6,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Atw\TestBundle\Entity\Support\CreateUpdateDtLifeCycleHelperTrait;
 
 /**
  * Article
  *
  * @UniqueEntity(
- *     fields={"categoryCode"},
- *     errorPath="categoryCode",
- *     message="入力されたカテゴリコードは既に使用されています。"
+ *     fields={"thumbnailPath"},
+ *     errorPath="thumbnailPath",
+ *     message="入力されたサムネイルパスは既に使用されています。"
  * )
  * @ORM\Table(name="article", uniqueConstraints={@ORM\UniqueConstraint(name="unique_article_thumbnail_path", columns={"thumbnail_path"})}, indexes={@ORM\Index(name="idx_article_created_at", columns={"created_at"})})
  * @ORM\Entity(repositoryClass="Atw\TestBundle\Repository\ArticleRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Article
 {
+    use CreateUpdateDtLifeCycleHelperTrait;
+
     /**
      * @var integer
      *
@@ -48,7 +52,7 @@ class Article
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=256, nullable=false)
+     * @ORM\Column(name="description", type="text", length=256, nullable=false)
      * @Assert\NotBlank(
      *      message = "詳細を入力してください。"
      * )

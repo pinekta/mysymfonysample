@@ -9,6 +9,12 @@ services:
             - @doctrine.orm.default_entity_manager
             - @validator
 
+    article_manager_interface:
+        class: Atw\TestBundle\Service\Article\ArticleManager
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @validator
+
     datetime_format_extension:
         class: Atw\TestBundle\Twig\DateTimeFormatExtension
         tags:

@@ -1,0 +1,47 @@
+        <div class="registBlock mB10">
+            {{ form_widget(form._token) }}
+            <table summary="入力">
+                <colgroup>
+                    <col class="w120"/>
+                    <col class="wAuto"/>
+                </colgroup>
+                <tbody>
+                    {% if entity.id %}
+                    <tr>
+                        <th>ID</th>
+                        <td><p>{{ entity.id }}</p></td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th>名称</th>
+                        <td>
+                            {{ form_widget(form.title) }}
+                            {{ form_errors(form.title) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>記事内容</span></th>
+                        <td>
+                            {{ form_widget(form.description) }}
+                            {{ form_errors(form.description) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>URL</span></th>
+                        <td>
+                            {{ form_widget(form.url) }}
+                            {{ form_errors(form.url) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>サムネイル</span></th>
+                        <td>
+                            {{ form_widget(form.thumbnailPath) }}
+                            {{ form_errors(form.thumbnailPath) }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.registBlock -->
+

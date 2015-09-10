@@ -2,18 +2,21 @@
 
 {% block body -%}
     <h1>Article list</h1>
+ 
+    {% include 'AtwTestBundle:Common:flashNotices.html.twig' %}
 
+    {{ knp_pagination_render(entities, 'Atw\TestBundle:Pagination:default.html.twig') }}
     <table class="records_list">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Url</th>
-                <th>Thumbnailpath</th>
-                <th>Createdat</th>
-                <th>Updatedat</th>
-                <th>Actions</th>
+                <th>ID</th>
+                <th>タイトル</th>
+                <th>記事内容</th>
+                <th>URL</th>
+                <th>サムネイル</th>
+                <th>作成日時</th>
+                <th>更新日時</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -23,9 +26,9 @@
                 <td>{{ entity.title }}</td>
                 <td>{{ entity.description }}</td>
                 <td>{{ entity.url }}</td>
-                <td>{{ entity.thumbnailPath }}</td>
-                <td>{{ entity.createdAt }}</td>
-                <td>{{ entity.updatedAt }}</td>
+                <td><img src="{{ entity.thumbnailPath }}" alt="{{ entity.title }}"></td>
+                <td>{{ entity.createdAt|datetime_format }}</td>
+                <td>{{ entity.updatedAt|datetime_format }}</td>
                 <td>
                 <ul>
                     <li>
@@ -41,7 +44,7 @@
         </tbody>
     </table>
 
-        <ul>
+    <ul>
         <li>
             <a href="{{ path('article_new') }}">
                 Create a new entry
