@@ -1,6 +1,22 @@
 {% if app.session.flashBag.has('notices') %}
     {% for flashMessage in app.session.flashBag.get('notices') %}
-        <div>
+        <div class="flash-notice">
+            <p class="strong">{{ flashMessage }}</p>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if app.session.flashBag.has('warnings') %}
+    {% for flashMessage in app.session.flashBag.get('warnings') %}
+        <div class="flash-warning">
+            <p class="strong">{{ flashMessage }}</p>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if app.session.flashBag.has('errors') %}
+    {% for flashMessage in app.session.flashBag.get('errors') %}
+        <div class="flash-error">
             <p class="strong">{{ flashMessage }}</p>
         </div>
     {% endfor %}
