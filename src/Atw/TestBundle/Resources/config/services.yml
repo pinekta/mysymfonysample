@@ -20,3 +20,10 @@ services:
         tags:
             - { name: twig.extension }
 
+    get_category_list_extension:
+        class: Atw\TestBundle\Twig\GetCategoryListExtension
+        arguments:
+            - @doctrine.orm.default_entity_manager
+        tags:
+            - { name: twig.extension }
+
