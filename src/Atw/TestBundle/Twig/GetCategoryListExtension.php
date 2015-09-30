@@ -3,12 +3,15 @@
 namespace Atw\TestBundle\Twig;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Atw\TestBundle\Twig\Support\EscapeHelperTrait;
 
 /**
  * class GetCategoryListExtension
  */
 class GetCategoryListExtension extends \Twig_Extension
 {
+    use EscapeHelperTrait;
+
     /** @var \Doctrine\ORM\EntityManagerInterface */
     private $em;
 
@@ -67,7 +70,7 @@ class GetCategoryListExtension extends \Twig_Extension
         }
         foreach ($entities as $entity) {
             $selected = $selectValue === $entity->getId() ? 'selected' : '';
-            $buf .= sprintf('<option value="%d" %s>%s</option>', $entity->getId(), $selected, $entity->getName());
+            $buf .= sprintf('<option value="%d" %s>%s</option>', $entity->getId(), $selected, $this->escapeForHtml($entity->getName()));
         }
         $buf .= '</select>';
         return $buf;
