@@ -34,8 +34,8 @@ class GetCategoryListExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'getCategoryName' => new \Twig_Function_Method($this, 'getCategoryName'),
-            'getCategoryList' => new \Twig_Function_Method($this, 'getCategoryList')
+            new \Twig_SimpleFunction('getCategoryName', [$this, 'getCategoryName']),
+            new \Twig_SimpleFunction('getCategoryList', [$this, 'getCategoryList']),
         ];
     }
 
