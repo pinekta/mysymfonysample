@@ -5,6 +5,8 @@ namespace Atw\TestBundle\Controller;
 use Knp\Component\Pager\Paginator;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -49,6 +51,30 @@ class CategoryController extends Controller
         return [
             'entities' => $entities,
         ];
+    }
+
+    /**
+     * Get List From API Access
+     *
+     * @Route("/api/{categoryCode}/{callback}", name="category_get_category", requirements={"categoryCode" = "^[a-z0-9]*$"}, defaults={"callback" = null})
+     * @Method("GET")
+     */
+    public function getCategoryByCategoryCodeByApiAction(Request $request, $categoryCode, $callback)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AtwTestBundle:Category')->findBy(['categoryCode' => $categoryCode]);
+
+        $output["name"] = htmlspecialchars($entity[0]->getName());
+        $output["categoryCode"] = htmlspecialchars($entity[0]->getCategoryCode());
+
+//        $response = new Response();
+//        $response->setContent(json_encode($output));
+//        $response->headers->set('Content-Type', 'application/json');
+
+        $response = new JsonResponse();
+        $response->setData($output);
+        if (isset($callback)) $response->setCallback($callback);
+        return $response;
     }
 
     /**
