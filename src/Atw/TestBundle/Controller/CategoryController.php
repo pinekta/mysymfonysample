@@ -59,7 +59,7 @@ class CategoryController extends Controller
      * @Route("/api/{categoryCode}/{callback}", name="category_get_category", requirements={"categoryCode" = "^[a-z0-9]*$"}, defaults={"callback" = null})
      * @Method("GET")
      */
-    public function getCategoryByCategoryCodeByApiAction(Request $request, $categoryCode, $callback)
+    public function getCategoryForApiAction(Request $request, $categoryCode, $callback)
     {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AtwTestBundle:Category')->findBy(['categoryCode' => $categoryCode]);
@@ -67,12 +67,12 @@ class CategoryController extends Controller
         $output["name"] = htmlspecialchars($entity[0]->getName());
         $output["categoryCode"] = htmlspecialchars($entity[0]->getCategoryCode());
 
-//        $response = new Response();
-//        $response->setContent(json_encode($output));
-//        $response->headers->set('Content-Type', 'application/json');
-
         $response = new JsonResponse();
         $response->setData($output);
+        $response->setStatusCode(Response::HTTP_OK);
+        // if error...
+        //$response->setStatusCode(500);
+
         if (isset($callback)) $response->setCallback($callback);
         return $response;
     }
