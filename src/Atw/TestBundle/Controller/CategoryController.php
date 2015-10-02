@@ -62,10 +62,13 @@ class CategoryController extends Controller
     public function getCategoryForApiAction(Request $request, $categoryCode, $callback)
     {
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('AtwTestBundle:Category')->findBy(['categoryCode' => $categoryCode]);
+        $entity = $em->getRepository('AtwTestBundle:Category')->findOneBy(['categoryCode' => $categoryCode]);
 
-        $output["name"] = htmlspecialchars($entity[0]->getName());
-        $output["categoryCode"] = htmlspecialchars($entity[0]->getCategoryCode());
+        $output = null;
+        if (!is_null($entity)) {
+            $output["name"] = htmlspecialchars($entity->getName());
+            $output["categoryCode"] = htmlspecialchars($entity->getCategoryCode());
+        }
 
         $response = new JsonResponse();
         $response->setData($output);
